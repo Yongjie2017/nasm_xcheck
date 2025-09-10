@@ -1,18 +1,19 @@
 
-all: code_gen code_build instruction_validation testcase_gen
+all: tc_gen
 
-code_gen:
-	for x in src/*.xda; do src/code_gen.sh $x; done
+tc_gen: ../x86/insns.xda src/tc_gen.py
+	rm -rf target_src/*
+	mkdir -p target_src/nasm target_src/gas
+	python3 src/tc_gen.py
 
-code_build:
-	for x in src/*.xda; do src/build_all.sh $x; done
+tc_build: target_src/nasm target_src/gas
+	mkdir -p output/nasm.2.16.03 output/nasm.3.00.rc3 output/gas
+	bash src/tc_build.sh
 
-instruction_validation:
-	for x in src/*.xda; do src/build_all.sh $x dump_check; done
-
-testcase_gen:
-	src/testcase_gen.sh
+tc_check: output/nasm.2.16.03 output/nasm.3.00.rc3 output/gas
+	bash src/tc_check.sh
 
 clean:
-	find -type f -name "*.o" | xargs rm -f
+	rm -rf target_src/nasm target_src/gas
+	rm -rf output/nasm.2.16.03 output/nasm.3.00.rc3 output/gas
 
