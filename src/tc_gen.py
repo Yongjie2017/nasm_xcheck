@@ -795,7 +795,7 @@ def GenerateGasInstructions(opcodes, xdaFile):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--xdafile", "-i", type=str, default="insns.xda", help="The instruction database from nasm")
+    parser.add_argument("--xdafile", "-i", type=str, default="../x86/insns.xda", help="The instruction database from nasm")
     args = parser.parse_args()
 
     opcodes = GetOpcodeList(args.xdafile)
