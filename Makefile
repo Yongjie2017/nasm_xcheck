@@ -8,7 +8,7 @@ tc_gen: ../x86/insns.xda src/tc_gen.py
 
 tc_build: target_src/nasm target_src/gas
 	mkdir -p output/nasm.2.16.03 output/nasm.3.00.rc3 output/gas
-	bash src/tc_build.sh | tee build.log 2>&1
+	bash src/tc_build.sh 2>&1 | tee build.log
 
 tc_check: output/nasm.2.16.03 output/nasm.3.00.rc3 output/gas
 	bash src/tc_check.sh | tee check.log
