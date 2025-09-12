@@ -243,16 +243,16 @@ operand_to_nasm_gas_mapping = {
                           ["%eax", "dword (%eax)"]],
     "rm32*"            : [["eax", "dword [eax]", ""],
                           ["%eax", "dword (%eax)", ""]],
-    "rm32|er"          : [["eax,{rd-sae}", "dword [eax],{rd-sae}"],
-                          ["%eax,{rd-sae}", "dword (%eax),{rd-sae}"]],
+    "rm32|er"          : [["eax", "dword [eax]", "eax,{rd-sae}"],
+                          ["%eax", "dword (%eax)""%eax,{rd-sae}"]],
     "rm32|near"        : [["eax", "dword near1"],
                           ["%eax", "dword near1"]],
     "rm64"             : [["rax", "qword [rax]"],
                           ["%rax", "qword (%rax)"]],
     "rm64*"            : [["rax", "qword [rax]", ""],
                           ["%rax", "qword (%rax)", ""]],
-    "rm64|er"          : [["rax,{rd-sae}", "qword [rax],{rd-sae}"],
-                          ["%rax,{rd-sae}", "qword (%rax),{rd-sae}"]],
+    "rm64|er"          : [["rax", "qword [rax]", "rax,{rd-sae}"],
+                          ["%rax", "qword (%rax)", "%rax,{rd-sae}"]],
     "rm64|near"        : [["rax", "[rax+r14*8+0x10]", "qword near1"],
                           ["%rax", "$0x10(%rax,%r14,8)", "qword near1"]],
     "rm8"              : [["al", "byte [eax]"],
@@ -268,7 +268,7 @@ operand_to_nasm_gas_mapping = {
     "sdword64"         : [["0x55AA55AA"],
                           ["$0x55AA55AA"]],
     "spec4"            : [["[rax+r14*8+0x10]", "[rax]"],
-                          ["0x10(%rax,%r14,8)", "(%rax)"]],
+                          ["$0x10(%rax,%r14,8)", "(%rax)"]],
     "tmmreg"           : [["tmm0"],
                           ["%tmm0"]],
     "udword64"         : [["qword [rax]"],
@@ -277,14 +277,14 @@ operand_to_nasm_gas_mapping = {
                           ["$0x10"]],
     "void"             : [[""],
                           [""]],
-    "xmem32"           : [["dword [ebp+xmm7*2+0x8]"],
-                          ["dword 0x8(%ebp,%xmm7,2)"]],
-    "xmem32|mask"      : [["dword [ebp+xmm7*2+0x8]", "dword [ebp+xmm7*2]{k1}"],
-                          ["dword 0x8(%ebp,%xmm7,2)", "dword (%ebp,%xmm7,2){%k1}"]],
-    "xmem64"           : [["qword [ebp+xmm7*2+0x8]"],
-                          ["qword 0x8(%ebp,%xmm7,2)"]],
-    "xmem64|mask"      : [["qword [ebp+xmm7*2+0x8]", "qword [ebp+xmm7*2]{k1}"],
-                          ["qword 0x8(%ebp,%xmm7,2)", "qword (%ebp,%xmm7,2){%k1}"]],
+    "xmem32"           : [["dword [rbp+xmm7*2+0x8]"],
+                          ["dword $0x8(%rbp,%xmm7,2)"]],
+    "xmem32|mask"      : [["dword [rbp+xmm7*2+0x8]", "dword [rbp+xmm7*2]{k1}"],
+                          ["dword $0x8(%rbp,%xmm7,2)", "dword (%rbp,%xmm7,2){%k1}"]],
+    "xmem64"           : [["qword [rbp+xmm7*2+0x8]"],
+                          ["qword $0x8(%rbp,%xmm7,2)"]],
+    "xmem64|mask"      : [["qword [rbp+xmm7*2+0x8]", "qword [rbp+xmm7*2]{k1}"],
+                          ["qword $0x8(%rbp,%xmm7,2)", "qword (%rbp,%xmm7,2){%k1}"]],
     "xmm0"             : [["xmm0"],
                           ["%xmm0"]],
     "xmmreg"           : [["xmm1"],
@@ -303,60 +303,60 @@ operand_to_nasm_gas_mapping = {
                           ["%xmm1", "oword (%rax,%r14,8)"]],
     "xmmrm128*"        : [["xmm1", "oword [rax+r14*8]", ""],
                           ["%xmm1", "oword (%rax,%r14,8)", ""]],
-    "xmmrm128|b16"     : [["xmm1", "word [eax]", "word [ebp+xmm7*2+0x8]"],
-                          ["%xmm1", "word (%eax)", "word 0x8(%ebp,%xmm7,2)"]],
-    "xmmrm128|b16|er"  : [["xmm1", "word [eax]", "word [ebp+xmm7*2+0x8]", "xmm1,{rd-sae}", "word [eax],{rd-sae}", "word [ebp+xmm7*2+0x8],{rd-sae}"],
-                          ["%xmm1", "word (%eax)", "word 0x8(%ebp,%xmm7,2)", "%xmm1,{rd-sae}", "word (%eax),{rd-sae}", "word 0x8(%ebp,%xmm7,2),{rd-sae}"]],
-    "xmmrm128|b16|sae" : [["xmm1", "word [eax]", "word [ebp+xmm7*2+0x8]", "xmm1,{sae}", "word [eax],{sae}", "word [ebp+xmm7*2+0x8],{sae}"],
-                          ["%xmm1", "word (%eax)", "word 0x8(%ebp,%xmm7,2)", "%xmm1,{sae}", "word (%eax),{sae}", "word 0x8(%ebp,%xmm7,2),{sae}"]],
-    "xmmrm128|b32"     : [["xmm1", "dword [eax]", "dword [ebp+xmm7*2+0x8]"],
-                          ["%xmm1", "dword (%eax)", "dword 0x8(%ebp,%xmm7,2)"]],
-    "xmmrm128|b32*"    : [["xmm1", "dword [eax]", "dword [ebp+xmm7*2+0x8]", ""],
-                          ["%xmm1", "dword (%eax)", "dword 0x8(%ebp,%xmm7,2)", ""]],
-    "xmmrm128|b64"     : [["xmm1", "qword [eax]", "qword [rbp+xmm7*2+0x8]"],
-                          ["%xmm1", "qword (%eax)", "qword 0x8(%rbp,%xmm7,2)"]],
-    "xmmrm128|b64*"    : [["xmm1", "qword [eax]", "qword [rbp+xmm7*2+0x8]", ""],
-                          ["%xmm1", "qword (%eax)", "qword 0x8(%rbp,%xmm7,2)", ""]],
+    "xmmrm128|b16"     : [["xmm1", "oword [rax]", "oword [rbp+r14*2+0x8]", "word [rax]{1to8}", "word [rbp+r14*2+0x8]{1to8}"],
+                          ["%xmm1", "oword (%rax)", "oword $0x8(%rbp,%r14,2)", "word (%rax){1to8}", "word $0x8(%rbp,%r14,2){1to8}"]],
+    "xmmrm128|b16|er"  : [["xmm1", "oword [rax]", "oword [rbp+r14*2+0x8]", "xmm1,{rd-sae}"],
+                          ["%xmm1", "oword (%rax)", "oword $0x8(%rbp,%r14,2)", "%xmm1,{rd-sae}"]],
+    "xmmrm128|b16|sae" : [["xmm1", "oword [rax]", "oword [rbp+r14*2+0x8]", "xmm1,{sae}"],
+                          ["%xmm1", "oword (%rax)", "oword $0x8(%rbp,%r14,2)", "%xmm1,{sae}"]],
+    "xmmrm128|b32"     : [["xmm1", "oword [rax]", "oword [rbp+r14*2+0x8]", "dword [rax]{1to4}", "dword [rbp+r14*2+0x8]{1to4}"],
+                          ["%xmm1", "oword (%rax)", "oword $0x8(%rbp,%r14,2)", "dword (%rax){1to4}", "dword $0x8(%rbp,%r14,2){1to4}"]],
+    "xmmrm128|b32*"    : [["xmm1", "oword [rax]", "oword [rbp+r14*2+0x8]", "dword [rax]{1to4}", "dword [rbp+r14*2+0x8]{1to4}", ""],
+                          ["%xmm1", "oword (%rax)", "oword $0x8(%rbp,%r14,2)", "dword (%rax){1to4}", "dword $0x8(%rbp,%r14,2){1to4}", ""]],
+    "xmmrm128|b64"     : [["xmm1", "oword [rax]", "oword [rbp+r14*2+0x8]", "qword [rax]{1to2}", "qword [rbp+r14*2+0x8]{1to2}"],
+                          ["%xmm1", "oword (%rax)", "oword $0x8(%rbp,%r14,2)", "qword (%rax){1to2}", "qword $0x8(%rbp,%r14,2){1to2}"]],
+    "xmmrm128|b64*"    : [["xmm1", "oword [rax]", "oword [rbp+r14*2+0x8]", "qword [rax]{1to2}", "qword [rbp+r14*2+0x8]{1to2}", ""],
+                          ["%xmm1", "oword (%rax)", "oword $0x8(%rbp,%r14,2)", "qword (%rax){1to2}", "qword $0x8(%rbp,%r14,2){1to2}", ""]],
     "xmmrm128|mask|z"  : [["xmm1", "xmm1{k7}", "xmm1{k7}{z}", "[rcx]", "[rcx]{k7}", "[rcx]{k7}{z}"],
                           ["%xmm1", "%xmm1{%k7}", "%xmm1{%k7}{z}", "(%rcx)", "(%rcx){%k7}", "(%rcx){%k7}{z}"]],
-    "xmmrm16"          : [["xmm1", "word [eax]"],
-                          ["%xmm1", "word (%eax)"]],
-    "xmmrm16|b16"      : [["xmm1", "word [eax]", "word [ebp+xmm7*2+0x8]"],
-                          ["%xmm1", "word (%eax)", "word 0x8(%ebp,%xmm7,2)"]],
-    "xmmrm16|er"       : [["xmm1", "word [eax]", "word [ebp+xmm7*2+0x8]", "xmm1,{rd-sae}", "word [eax],{rd-sae}", "word [ebp+xmm7*2+0x8],{rd-sae}"],
-                          ["%xmm1", "word (%eax)", "word 0x8(%ebp,%xmm7,2)", "%xmm1,{rd-sae}", "word (%eax),{rd-sae}", "word 0x8(%ebp,%xmm7,2),{rd-sae}"]],
-    "xmmrm16|sae"      : [["xmm1", "word [eax]", "word [ebp+xmm7*2+0x8]", "xmm1,{sae}", "word [eax],{sae}", "word [ebp+xmm7*2+0x8],{sae}"],
-                          ["%xmm1", "word (%eax)", "word 0x8(%ebp,%xmm7,2)", "%xmm1,{sae}", "word (%eax),{sae}", "word 0x8(%ebp,%xmm7,2),{sae}"]],
-    "xmmrm256|b16"     : [["xmm1", "word [rax]", "word [rbp+xmm7*2+0x8]"],
-                          ["%xmm1", "word (%rax)", "word 0x8(%rbp,%xmm7,2)"]],
+    "xmmrm16"          : [["xmm1", "word [rax]"],
+                          ["%xmm1", "word (%rax)"]],
+    "xmmrm16|b16"      : [["xmm1", "word [eax]", "word [ebp+r14*2+0x8]", "word [eax]{1to8}", "word [ebp+r14*2+0x8]{1to8}"],
+                          ["%xmm1", "word (%eax)", "word $0x8(%ebp,%r14,2)", "word (%eax){1to8}", "word $0x8(%ebp,%r14,2){1to8}"]],
+    "xmmrm16|er"       : [["xmm1", "word [eax]", "word [ebp+r14*2+0x8]", "xmm1,{rd-sae}"],
+                          ["%xmm1", "word (%eax)", "word $0x8(%ebp,%r14,2)", "%xmm1,{rd-sae}"]],
+    "xmmrm16|sae"      : [["xmm1", "word [eax]", "word [ebp+r14*2+0x8]", "xmm1,{sae}"],
+                          ["%xmm1", "word (%eax)", "word $0x8(%ebp,%r14,2)", "%xmm1,{sae}"]],
+    "xmmrm256|b16"     : [["xmm1", "yword [rax]", "yword [rbp+r14*2+0x8]"],
+                          ["%xmm1", "word (%rax)", "word $0x8(%rbp,%r14,2)"]],
     "xmmrm32"          : [["xmm1", "dword [eax]"],
                           ["%xmm1", "dword (%eax)"]],
     "xmmrm32*"         : [["xmm1", "dword [eax]", ""],
                           ["%xmm1", "dword (%eax)", ""]],
-    "xmmrm32|b16"      : [["xmm1", "dword [eax]", "word [ebp+xmm7*2+0x8]"],
-                          ["%xmm1", "dword (%eax)", "word 0x8(%ebp,%xmm7,2)"]],
-    "xmmrm32|er"       : [["xmm1", "dword [eax]", "xmm1,{rd-sae}", "dword [eax],{rd-sae}"],
-                          ["%xmm1", "dword (%eax)", "%xmm1,{rd-sae}", "dword (%eax),{rd-sae}"]],
-    "xmmrm32|sae"      : [["xmm1", "dword [eax]", "xmm1,{sae}", "dword [eax],{sae}"],
-                          ["%xmm1", "dword (%eax)", "%xmm1,{sae}", "dword (%eax),{sae}"]],
+    "xmmrm32|b16"      : [["xmm1", "dword [eax]", "word [ebp+r14*2+0x8]", "word [eax]{1to8}", "word [ebp+r14*2+0x8]{1to8}"],
+                          ["%xmm1", "dword (%eax)", "word $0x8(%ebp,%r14,2)", "word (%eax){1to8}", "word $0x8(%ebp,%r14,2){1to8}"]],
+    "xmmrm32|er"       : [["xmm1", "dword [eax]", "xmm1,{rd-sae}"],
+                          ["%xmm1", "dword (%eax)", "%xmm1,{rd-sae}"]],
+    "xmmrm32|sae"      : [["xmm1", "dword [eax]", "xmm1,{sae}"],
+                          ["%xmm1", "dword (%eax)", "%xmm1,{sae}"]],
     "xmmrm64"          : [["xmm1", "qword [rax]"],
                           ["%xmm1", "qword (%rax)"]],
     "xmmrm64*"         : [["xmm1", "qword [rax]", ""],
                           ["%xmm1", "qword (%rax)", ""]],
-    "xmmrm64|b16"      : [["xmm1", "qword [rax]", "word [rbp+xmm7*2+0x8]"],
-                          ["%xmm1", "qword (%rax)", "word 0x8(%rbp,%xmm7,2)"]],
-    "xmmrm64|b32"      : [["xmm1", "qword [rax]", "dword [rbp+xmm7*2+0x8]"],
-                          ["%xmm1", "qword (%rax)", "dword 0x8(%rbp,%xmm7,2)"]],
-    "xmmrm64|er"       : [["xmm1", "qword [rax]", "xmm1,{rd-sae}", "qword [rax],{rd-sae}"],
-                          ["%xmm1", "qword (%rax)", "%xmm1,{rd-sae}", "qword (%rax),{rd-sae}"]],
-    "xmmrm64|sae"      : [["xmm1", "qword [rax]", "xmm1,{sae}", "qword [rax],{sae}"],
-                          ["%xmm1", "qword (%rax)", "%xmm1,{sae}", "qword (%rax),{sae}"]],
+    "xmmrm64|b16"      : [["xmm1", "qword [rax]", "qword [rbp+r14*2+0x8]", "word [rax]{1to8}", "word [rbp+r14*2+0x8]{1to8}"],
+                          ["%xmm1", "qword (%rax)", "qword $0x8(%rbp,%r14,2)", "word (%rax){1to8}", "word $0x8(%rbp,%r14,2){1to8}"]],
+    "xmmrm64|b32"      : [["xmm1", "qword [rax]", "qword [rbp+r14*2+0x8]", "dword [rax]{1to4}", "dword [rbp+r14*2+0x8]{1to4}"],
+                          ["%xmm1", "qword (%rax)", "qword $0x8(%rbp,%r14,2)", "dword (%rax){1to4}", "dword $0x8(%rbp,%r14,2){1to4}"]],
+    "xmmrm64|er"       : [["xmm1", "qword [rax]", "xmm1,{rd-sae}"],
+                          ["%xmm1", "qword (%rax)", "%xmm1,{rd-sae}"]],
+    "xmmrm64|sae"      : [["xmm1", "qword [rax]", "xmm1,{sae}"],
+                          ["%xmm1", "qword (%rax)", "%xmm1,{sae}"]],
     "xmmrm8"           : [["xmm1", "byte [eax]"],
                           ["%xmm1", "byte (%eax)"]],
-    "ymem32"           : [["dword [ebp+ymm7*2]"],
-                          ["dword (%ebp,%ymm7,2)"]],
-    "ymem32|mask"      : [["dword [ebp+ymm7*2]", "dword [ebp+ymm7*2]{k1}"],
-                          ["dword (%ebp,%ymm7,2)", "dword (%ebp,%ymm7,2){%k1}"]],
+    "ymem32"           : [["dword [rbp+ymm7*2]"],
+                          ["dword (%rbp,%ymm7,2)"]],
+    "ymem32|mask"      : [["dword [rbp+ymm7*2]", "dword [rbp+ymm7*2]{k1}"],
+                          ["dword (%rbp,%ymm7,2)", "dword (%rbp,%ymm7,2){%k1}"]],
     "ymem64"           : [["qword [rbp+ymm7*2]"],
                           ["qword (%rbp,%ymm7,2)"]],
     "ymem64|mask"      : [["qword [rbp+ymm7*2]", "qword [rbp+ymm7*2]{k1}"],
@@ -371,40 +371,40 @@ operand_to_nasm_gas_mapping = {
                           ["%ymm1", "%ymm1{%k7}", "%ymm1{%k7}{z}"]],
     "ymmrm128"         : [["ymm1", "oword [rax+r14*8]"],
                           ["%ymm1", "oword (%rax,%r14,8)"]],
-    "ymmrm128|b32"     : [["ymm1", "dword [eax]", "dword [ebp+ymm7*2]"],
-                          ["%ymm1", "dword (%eax)", "dword (%ebp,%ymm7,2)"]],
-    "ymmrm16|b16"      : [["ymm1", "word [eax]", "word [ebp+ymm7*2]"],
-                          ["%ymm1", "word (%eax)", "word (%ebp,%ymm7,2)"]],
+    "ymmrm128|b32"     : [["ymm1", "oword [rax]", "oword [rbp+r14*2]", "dword [rax]{1to8}", "dword [rbp+r14*2+0x8]{1to8}"],
+                          ["%ymm1", "oword (%rax)", "oword (%rbp,%r14,2)", "dword [rax]{1to8}", "dword [rbp+r14*2+0x8]{1to8}"]],
+    "ymmrm16|b16"      : [["ymm1", "word [eax]", "word [ebp+r14*2]", "word [rax]{1to16}", "word [rbp+r14*2+0x8]{1to16}"],
+                          ["%ymm1", "word (%eax)", "word (%ebp,%r14,2)", "word (%rax){1to16}", "word $0x8(%rbp,%r14,2){1to16}"]],
     "ymmrm256"         : [["ymm1", "yword [rax+r14*8+0x10]"],
                           ["%ymm1", "yword $0x10(%rax,%r14,8)"]],
     "ymmrm256*"        : [["ymm1", "yword [rax+r14*8+0x10]", ""],
                           ["%ymm1", "yword $0x10(%rax,%r14,8)", ""]],
-    "ymmrm256|b16"     : [["ymm1", "word [eax]", "word [ebp+ymm7*2+0x8]"],
-                          ["y%m1", "word (%eax)", "word 0x8(%ebp,%ymm7,2)"]],
-    "ymmrm256|b16|er"  : [["ymm1", "word [eax]", "word [ebp+ymm7*2+0x8]", "ymm1{rd-sae}", "word [eax],{rd-sae}", "word [ebp+ymm7*2+0x8],{rd-sae}"],
-                          ["y%m1", "word (%eax)", "word 0x8(%ebp,%ymm7,2)", "%ymm1{rd-sae}", "word (%eax),{rd-sae}", "word 0x8(%ebp,%ymm7,2),{rd-sae}"]],
-    "ymmrm256|b16|sae" : [["ymm1", "word [eax]", "word [ebp+ymm7*2+0x8]", "ymm1{sae}", "word [eax],{sae}", "word [ebp+ymm7*2+0x8],{sae}"],
-                          ["%ymm1", "word (%eax)", "word 0x8(%ebp,%ymm7,2)", "%ymm1{sae}", "word (%eax),{sae}", "word 0x8(%ebp,%ymm7,2),{sae}"]],
-    "ymmrm256|b32"     : [["ymm1", "dword [eax]", "dword [ebp+ymm7*2+0x8]"],
-                          ["%ymm1", "dword (%eax)", "dword 0x8(%ebp,%ymm7,2)"]],
-    "ymmrm256|b32*"    : [["ymm1", "dword [eax]", "dword [ebp+ymm7*2+0x8]", ""],
-                          ["%ymm1", "dword (%eax)", "dword 0x8(%ebp,%ymm7,2)", ""]],
-    "ymmrm256|b32|er"  : [["ymm1", "dword [eax]", "dword [ebp+ymm7*2+0x8]", "ymm1,{rd-sae}", "dword [eax],{rd-sae}", "dword [ebp+ymm7*2+0x8],{rd-sae}"],
-                          ["%ymm1", "dword (%eax)", "dword 0x8(%ebp,%ymm7,2)", "%ymm1,{rd-sae}", "dword (%eax),{rd-sae}", "dword 0x8(%ebp,%ymm7,2),{rd-sae}"]],
-    "ymmrm256|b32|sae" : [["ymm1", "dword [eax]", "dword [ebp+ymm7*2+0x8]", "ymm1,{sae}", "dword [eax],{sae}", "dword [ebp+ymm7*2+0x8],{sae}"],
-                          ["%ymm1", "dword (%eax)", "dword 0x8(%ebp,%ymm7,2)", "%ymm1,{sae}", "dword (%eax),{sae}", "dword 0x8(%ebp,%ymm7,2),{sae}"]],
-    "ymmrm256|b64"     : [["ymm1", "qword [rax]", "qword [rbp+ymm7*2+0x8]"],
-                          ["%ymm1", "qword (%rax)", "qword 0x8(%rbp,%ymm7,2)"]],
-    "ymmrm256|b64*"    : [["ymm1", "qword [rax]", "qword [rbp+ymm7*2+0x8]", ""],
-                          ["%ymm1", "qword (%rax)", "qword 0x8(%rbp,%ymm7,2)", ""]],
+    "ymmrm256|b16"     : [["ymm1", "yword [rax]", "yword [rbp+r14*2+0x8]", "word [rax]{1to16}", "word [rbp+r14*2+0x8]{1to16}"],
+                          ["y%m1", "yword (%rax)", "yword $0x8(%rbp,%r14,2)", "word (%rax){1to16}", "word $0x8(%rbp,%r14,2){1to16}"]],
+    "ymmrm256|b16|er"  : [["ymm1", "yword [rax]", "yword [rbp+r14*2+0x8]", "ymm1,{rd-sae}"],
+                          ["y%m1", "yword (%rax)", "yword $0x8(%rbp,%r14,2)", "%ymm1,{rd-sae}"]],
+    "ymmrm256|b16|sae" : [["ymm1", "yword [rax]", "yword [rbp+r14*2+0x8]", "ymm1,{sae}"],
+                          ["%ymm1", "yword (%rax)", "yword $0x8(%rbp,%r14,2)", "%ymm1,{sae}"]],
+    "ymmrm256|b32"     : [["ymm1", "yword [rax]", "yword [rbp+r14*2+0x8]", "dword [rax]{1to8}", "dword [rbp+r14*2+0x8]{1to8}"],
+                          ["%ymm1", "yword (%rax)", "yword $0x8(%rbp,%r14,2)", "dword [rax]{1to8}", "dword [rbp+r14*2+0x8]{1to8}"]],
+    "ymmrm256|b32*"    : [["ymm1", "yword [rax]", "yword [rbp+r14*2+0x8]", "dword [rax]{1to8}", "dword [rbp+r14*2+0x8]{1to8}", ""],
+                          ["%ymm1", "yword (%rax)", "yword $0x8(%rbp,%r14,2)", "dword [rax]{1to8}", "dword [rbp+r14*2+0x8]{1to8}", ""]],
+    "ymmrm256|b32|er"  : [["ymm1", "yword [rax]", "yword [rbp+r14*2+0x8]", "ymm1,{rd-sae}"],
+                          ["%ymm1", "yword (%rax)", "yword $0x8(%rbp,%r14,2)", "%ymm1,{rd-sae}"]],
+    "ymmrm256|b32|sae" : [["ymm1", "yword [rax]", "yword [rbp+r14*2+0x8]", "ymm1,{sae}"],
+                          ["%ymm1", "yword (%rax)", "yword $0x8(%rbp,%r14,2)", "%ymm1,{sae}"]],
+    "ymmrm256|b64"     : [["ymm1", "yword [rax]", "yword [rbp+r14*2+0x8]", "qword [rax]{1to4}", "qword [rbp+r14*2+0x8]{1to4}"],
+                          ["%ymm1", "yword (%rax)", "yword $0x8(%rbp,%r14,2)", "qword (%rax){1to4}", "qword $0x8(%rbp,%r14,2){1to4}"]],
+    "ymmrm256|b64*"    : [["ymm1", "qword [rax]", "qword [rbp+r14*2+0x8]", "qword [rax]{1to4}", "qword [rbp+r14*2+0x8]{1to4}", ""],
+                          ["%ymm1", "qword (%rax)", "qword $0x8(%rbp,%r14,2)", "qword (%rax){1to4}", "qword $0x8(%rbp,%r14,2){1to4}", ""]],
     "ymmrm256|mask|z"  : [["ymm1", "ymm1{k7}", "ymm1{k7}{z}", "[rcx]", "[rcx]{k7}", "[rcx]{k7}{z}"],
                           ["%ymm1", "%ymm1{%k7}", "%ymm1{%k7}{z}", "(%rcx)", "(%rcx){%k7}", "(%rcx){%k7}{z}"]],
-    "ymmrm256|sae"     : [["ymm1", "yword [rax+r14*8+0x10]", "ymm1,{sae}", "yword [rax+r14*8+0x10],{sae}"],
-                          ["%ymm1", "yword $0x10(%rax,%r14,8)", "%ymm1,{sae}", "yword $0x10(%rax,%r14,8),{sae}"]],
-    "zmem32"           : [["dword [ebp+zmm7*2]"],
-                          ["dword (%ebp,%zmm7,2)"]],
-    "zmem32|mask"      : [["dword [ebp+zmm7*2]", "dword [ebp+zmm7*2]{k1}"],
-                          ["dword (%ebp,%zmm7,2)", "dword (%ebp,%zmm7,2){%k1}"]],
+    "ymmrm256|sae"     : [["ymm1", "yword [rax+r14*8+0x10]", "ymm1,{sae}"],
+                          ["%ymm1", "yword $0x10(%rax,%r14,8)", "%ymm1,{sae}"]],
+    "zmem32"           : [["dword [rbp+zmm7*2]"],
+                          ["dword (%rbp,%zmm7,2)"]],
+    "zmem32|mask"      : [["dword [rbp+zmm7*2]", "dword [rbp+zmm7*2]{k1}"],
+                          ["dword (%rbp,%zmm7,2)", "dword (%rbp,%zmm7,2){%k1}"]],
     "zmem64"           : [["qword [rbp+zmm7*2]"],
                           ["qword (%rbp,%zmm7,2)"]],
     "zmem64|mask"      : [["qword [rbp+zmm7*2]", "qword [rbp+zmm7*2]{k1}"],
@@ -421,40 +421,40 @@ operand_to_nasm_gas_mapping = {
                           ["%zmm0+3"]],
     "zmmreg|sae"       : [["zmm1", "zmm1,{sae}"],
                           ["%zmm1", "%zmm1,{sae}"]],
-    "zmmrm128|b32"     : [["zmm1", "oword [rax]", "dword [ebp+zmm7*2+0x8]"],
-                          ["%zmm1", "oword (%rax)", "dword 0x8(%ebp,%zmm7,2)"]],
-    "zmmrm16|b16|er"   : [["zmm1", "word [eax]", "word [ebp+zmm7*2+0x8]", "zmm1,{rd-sae}", "word [eax],{rd-sae}", "word [ebp+zmm7*2+0x8],{rd-sae}"],
-                          ["%zmm1", "word (%eax)", "word 0x8(%ebp,%zmm7,2)", "%zmm1,{rd-sae}", "word (%eax),{rd-sae}", "word 0x8(%ebp,%zmm7,2),{rd-sae}"]],
-    "zmmrm16|b16|sae"  : [["zmm1", "word [eax]", "word [ebp+zmm7*2+0x8]", "zmm1,{sae}", "word [eax],{sae}", "word [ebp+zmm7*2+0x8],{sae}"],
-                          ["%zmm1", "word (%eax)", "word 0x8(%ebp,%zmm7,2)", "%zmm1,{sae}", "word (%eax),{sae}", "word 0x8(%ebp,%zmm7,2),{sae}"]],
+    "zmmrm128|b32"     : [["zmm1", "oword [rax]", "oword [rbp+r14*2+0x8]", "dword [rax]{1to16}", "dword [rbp+r14*2+0x8]{1to16}"],
+                          ["%zmm1", "oword (%rax)", "oword $0x8(%rbp,%r14,2)", "dword [rax]{1to16}", "dword [rbp+r14*2+0x8]{1to16}"]],
+    "zmmrm16|b16|er"   : [["zmm1", "word [rax]", "word [rbp+r14*2+0x8]", "zmm1,{rd-sae}"],
+                          ["%zmm1", "word (%rax)", "word $0x8(%rbp,%r14,2)", "%zmm1,{rd-sae}"]],
+    "zmmrm16|b16|sae"  : [["zmm1", "word [rax]", "word [rbp+r14*2+0x8]", "zmm1,{sae}"],
+                          ["%zmm1", "word (%rax)", "word $0x8(%rbp,%r14,2)", "%zmm1,{sae}"]],
     "zmmrm512"         : [["zmm1", "zword [rax+r14*8+0x10]"],
                           ["%zmm1", "zword $0x10(%rax,%r14,8)"]],
     "zmmrm512*"        : [["zmm1", "zword [rax+r14*8+0x10]", ""],
                           ["%zmm1", "zword $0x10(%rax,%r14,8)", ""]],
-    "zmmrm512|b16"     : [["zmm1", "zword [rax]", "word [rbp+zmm7*2+0x8]"],
-                          ["%zmm1", "zword (%rax)", "word 0x8(%rbp,%zmm7,2)"]],
-    "zmmrm512|b16|er"  : [["zmm1", "zword [rax]", "word [ebp+zmm7*2+0x8]", "zmm1,{rd-sae}", "zword [rax],{rd-sae}", "word [ebp+zmm7*2+0x8],{rd-sae}"],
-                          ["%zmm1", "zword (%rax)", "word 0x8(%ebp,%zmm7,2)", "%zmm1,{rd-sae}", "zword (%rax),{rd-sae}", "word 0x8(%ebp,%zmm7,2),{rd-sae}"]],
-    "zmmrm512|b16|sae" : [["zmm1", "zword [rax]", "word [ebp+zmm7*2+0x8]", "zmm1,{sae}", "zword [rax],{sae}", "word [ebp+zmm7*2+0x8],{sae}"],
-                          ["%zmm1", "zword (%rax)", "word 0x8(%ebp,%zmm7,2)", "%zmm1,{sae}", "zword (%rax),{sae}", "word 0x8(%ebp,%zmm7,2),{sae}"]],
-    "zmmrm512|b32"     : [["zmm1", "zword [rax]", "dword [ebp+zmm7*2+0x8]"],
-                          ["%zmm1", "zword (%rax)", "dword 0x8(%ebp,%zmm7,2)"]],
-    "zmmrm512|b32*"    : [["zmm1", "zword [rax]", "dword [ebp+zmm7*2+0x8]", ""],
-                          ["%zmm1", "zword (%rax)", "dword 0x8(%ebp,%zmm7,2)", ""]],
-    "zmmrm512|b32|er"  : [["zmm1", "zword [rax]", "dword [ebp+zmm7*2+0x8]", "zmm1,{rd-sae}", "zword [rax],{rd-sae}", "dword [ebp+zmm7*2+0x8],{rd-sae}"],
-                          ["%zmm1", "zword (%rax)", "dword 0x8(%ebp,%zmm7,2)", "%zmm1,{rd-sae}", "zword (%rax),{rd-sae}", "dword 0x8(%ebp,%zmm7,2),{rd-sae}"]],
-    "zmmrm512|b32|sae" : [["zmm1", "zword [rax]", "dword [ebp+zmm7*2+0x8]", "zmm1,{sae}", "zword [rax],{sae}", "dword [ebp+zmm7*2+0x8],{sae}"],
-                          ["%zmm1", "zword (%rax)", "dword 0x8(%ebp,%zmm7,2)", "%zmm1,{sae}", "zword (%rax),{sae}", "dword 0x8(%ebp,%zmm7,2),{sae}"]],
-    "zmmrm512|b64"     : [["zmm1", "zword [rax]", "qword [rbp+zmm7*2+0x8]"],
-                          ["%zmm1", "zword (%rax)", "qword 0x8(%rbp,%zmm7,2)"]],
-    "zmmrm512|b64*"    : [["zmm1", "zword [rax]", "qword [rbp+zmm7*2+0x8]", ""],
-                          ["%zmm1", "zword (%rax)", "qword 0x8(%rbp,%zmm7,2)", ""]],
-    "zmmrm512|b64|er"  : [["zmm1", "zword [rax]", "qword [ebp+zmm7*2+0x8]", "zmm1,{rd-sae}", "zword [rax],{rd-sae}", "qword [ebp+zmm7*2+0x8],{rd-sae}"],
-                          ["%zmm1", "zword (%rax)", "qword 0x8(%ebp,%zmm7,2)", "%zmm1,{rd-sae}", "zword (%rax),{rd-sae}", "qword 0x8(%ebp,%zmm7,2),{rd-sae}"]],
-    "zmmrm512|b64|sae" : [["zmm1", "zword [rax]", "qword [ebp+zmm7*2+0x8]", "zmm1,{sae}", "zword [rax],{sae}", "qword [ebp+zmm7*2+0x8],{sae}"],
-                          ["%zmm1", "zword (%rax)", "qword 0x8(%ebp,%zmm7,2)", "%zmm1,{sae}", "zword (%rax),{sae}", "qword 0x8(%ebp,%zmm7,2),{sae}"]],
-    "zmmrm512|mask|z"  : [["zmm1", "zmm1{k7}", "zmm1{k7}{z}", "[rcx]", "[rcx]{k7}", "[rcx]{k7}{z}"],
-                          ["%zmm1", "%zmm1{%k7}", "%zmm1{%k7}{z}", "(%rcx)", "(%rcx){%k7}", "(%rcx){%k7}{z}"]]
+    "zmmrm512|b16"     : [["zmm1", "zword [rax]", "zword [rbp+r14*2+0x8]", "word [rax]{1to32}", "word [rbp+r14*2+0x8]{1to32}"],
+                          ["%zmm1", "zword (%rax)", "zword $0x8(%rbp,%r14,2)", "word (%rax){1to32}", "word $0x8(%rbp,%r14,2){1to32}"]],
+    "zmmrm512|b16|er"  : [["zmm1", "zword [rax]", "zword [rbp+r14*2+0x8]", "zmm1,{rd-sae}"],
+                          ["%zmm1", "zword (%rax)", "zword $0x8(%rbp,%r14,2)", "%zmm1,{rd-sae}"]],
+    "zmmrm512|b16|sae" : [["zmm1", "zword [rax]", "zword [rbp+r14*2+0x8]", "zmm1,{sae}"],
+                          ["%zmm1", "zword (%rax)", "zword $0x8(%rbp,%r14,2)", "%zmm1,{sae}"]],
+    "zmmrm512|b32"     : [["zmm1", "zword [rax]", "zword [rbp+r14*2+0x8]", "dword [rax]{1to16}", "dword [rbp+r14*2+0x8]{1to16}"],
+                          ["%zmm1", "zword (%rax)", "zword $0x8(%rbp,%r14,2)", "dword [rax]{1to16}", "dword [rbp+r14*2+0x8]{1to16}"]],
+    "zmmrm512|b32*"    : [["zmm1", "zword [rax]", "zword [rbp+r14*2+0x8]", "dword [rax]{1to16}", "dword [rbp+r14*2+0x8]{1to16}", ""],
+                          ["%zmm1", "zword (%rax)", "zword $0x8(%rbp,%r14,2)", "dword [rax]{1to16}", "dword [rbp+r14*2+0x8]{1to16}", ""]],
+    "zmmrm512|b32|er"  : [["zmm1", "zword [rax]", "zword [rbp+r14*2+0x8]", "zmm1,{rd-sae}"],
+                          ["%zmm1", "zword (%rax)", "zword $0x8(%rbp,%r14,2)", "%zmm1,{rd-sae}"]],
+    "zmmrm512|b32|sae" : [["zmm1", "zword [rax]", "zword [rbp+r14*2+0x8]", "zmm1,{sae}"],
+                          ["%zmm1", "zword (%rax)", "zword $0x8(%rbp,%r14,2)", "%zmm1,{sae}"]],
+    "zmmrm512|b64"     : [["zmm1", "zword [rax]", "zword [rbp+r14*2+0x8]", "qword [rax]{1to8}", "qword [rbp+r14*2+0x8]{1to8}"],
+                          ["%zmm1", "zword (%rax)", "zword $0x8(%rbp,%r14,2)", "qword (%rax){1to8}", "qword $0x8(%rbp,%r14,2){1to8}"]],
+    "zmmrm512|b64*"    : [["zmm1", "zword [rax]", "zword [rbp+r14*2+0x8]", "qword [rax]{1to8}", "qword [rbp+r14*2+0x8]{1to8}", ""],
+                          ["%zmm1", "zword (%rax)", "zword $0x8(%rbp,%r14,2)", "qword (%rax){1to8}", "qword $0x8(%rbp,%r14,2){1to8}", ""]],
+    "zmmrm512|b64|er"  : [["zmm1", "zword [rax]", "zword [rbp+r14*2+0x8]", "zmm1,{rd-sae}"],
+                          ["%zmm1", "zword (%rax)", "zword $0x8(%rbp,%r14,2)", "%zmm1,{rd-sae}"]],
+    "zmmrm512|b64|sae" : [["zmm1", "zword [rax]", "zword [rbp+r14*2+0x8]", "zmm1,{sae}"],
+                          ["%zmm1", "zword (%rax)", "zword $0x8(%rbp,%r14,2)", "%zmm1,{sae}"]],
+    "zmmrm512|mask|z"  : [["zmm1", "zmm1{k7}", "zmm1{k7}{z}", "zword [rcx]", "zword [rcx]{k7}", "zword [rcx]{k7}{z}"],
+                          ["%zmm1", "%zmm1{%k7}", "%zmm1{%k7}{z}", "zword (%rcx)", "zword (%rcx){%k7}", "zword (%rcx){%k7}{z}"]]
 }
 
 blacklist_non_64bit_opcodes = [
@@ -675,6 +675,34 @@ blacklist_non_intel_opcodes = [
     "XSTORE"
 ]
 
+opcode_translation_table = {
+    "CCMPscc"   : ["CCMPB", "CCMPBE", "CCMPBE", "CCMPF", "CCMPL", "CCMPLE", "CCMPNB", "CCMPNBE",
+                    "CCMPNL", "CCMPNLE", "CCMPNO", "CCMPNS", "CCMPNZ", "CCMPO", "CCMPS", "CCMPT", "CCMPZ"],
+    "CMOVcc"    : ["CMOVA", "CMOVAE", "CMOVB", "CMOVBE", "CMOVC", "CMOVE", "CMOVG", "CMOVGE",
+                    "CMOVL", "CMOVLE", "CMOVNA", "CMOVNAE", "CMOVNB", "CMOVNBE", "CMOVNC",
+                    "CMOVNE", "CMOVNG", "CMOVNGE", "CMOVNL", "CMOVNLE", "CMOVNO", "CMOVNP",
+                    "CMOVNS", "CMOVNZ", "CMOVO", "CMOVP", "CMOVPE", "CMOVPO", "CMOVS", "CMOVZ"],
+    "CMPccXADD" : ["CMPBEXADD", "CMPBXADD", "CMPLEXADD", "CMPLXADD", "CMPNBEXADD", "CMPNBXADD",
+                    "CMPNLEXADD", "CMPNLXADD", "CMPNOXADD", "CMPNPXADD", "CMPNSXADD", "CMPNZXADD",
+                    "CMPOXADD", "CMPPXADD", "CMPSXADD", "CMPZXADD"],
+    "Jcc"       : ["JA", "JAE", "JB", "JBE", "JC", "JCXZ", "JECXZ", "JE", "JG", "JGE", "JL", "JLE",
+                    "JNA", "JNAE", "JNB", "JNBE", "JNC", "JNE", "JNG", "JNGE", "JNL", "JNLE",
+                    "JNO", "JNP", "JNS", "JNZ", "JO", "JP", "JPE", "JPO", "JS", "JZ", "JA", "JAE",
+                    "JB", "JBE", "JC", "JE", "JZ", "JG", "JGE", "JL", "JLE", "JNA", "JNAE", "JNB",
+                    "JNBE", "JNC", "JNE", "JNG", "JNGE", "JNL", "JNLE", "JNO", "JNP", "JNS", "JNZ",
+                    "JO", "JP", "JPE", "JPO", "JS", "JZ"],
+    "SETcc"     : ["SETA", "SETAE", "SETB", "SETBE", "SETC", "SETE", "SETG", "SETGE", "SETL",
+                    "SETLE", "SETNA", "SETNAE", "SETNB", "SETNBE", "SETNC", "SETNE", "SETNG",
+                    "SETNGE", "SETNL", "SETNLE", "SETNO", "SETNP", "SETNS", "SETNZ", "SETO",
+                    "SETP", "SETPE", "SETPO", "SETS", "SETZ"],
+    "SETccZU"   : ["SETB", "SETBE", "SETL", "SETLE", "SETNB", "SETNBE", "SETNL", "SETNLE", "SETNO",
+                    "SETNP", "SETNS", "SETNZ", "SETO", "SETP", "SETS", "SETZ"]
+}
+
+prefix_by_opcode_table = {
+    "SETccZU"   : "{zu} "
+}
+
 def SplitOperands(operandStr):
     # Split by comma
     parts = re.split(r',', operandStr)
@@ -708,12 +736,21 @@ def RemoveBlacklistedOpcodes(opcodeList):
         filtered_opcodes.append(opcode)
     return filtered_opcodes
 
-def GetPrefix(line: str):
+def GetOpcodeAndPrefix(line: str, opcode: str):
+    opcodesEx = [opcode]
+    prefix = ""
+
     if line.find("evex.") != -1:
-        return "{evex} "
-    if line.find("vex.") != -1 or line.find("vex+.") != -1:
-        return "{vex} "
-    return ""
+        prefix = "{evex} "
+    elif line.find("vex.") != -1 or line.find("vex+.") != -1:
+        prefix = "{vex} "
+
+    if opcode in opcode_translation_table:
+        opcodesEx = opcode_translation_table[opcode]
+    if opcode in prefix_by_opcode_table:
+        prefix += prefix_by_opcode_table[opcode]
+
+    return opcodesEx, prefix
 
 def PopulateOperandMapping(operandList: list, pos: int, temp: list, outputOperands: list, dir: int):
     for operand in operandList[pos]:
@@ -737,7 +774,7 @@ def GenerateNasmInstructions(opcodes, xdaFile):
                 if not line.strip():
                     continue
                 if line.split()[0] == opcode:
-                    prefix = GetPrefix(line)
+                    opcodesEx, prefix = GetOpcodeAndPrefix(line, opcode)
                     operandStr = line.split()[1]
                     operands = SplitOperands(operandStr)
                     nasm_operands = []
@@ -752,10 +789,11 @@ def GenerateNasmInstructions(opcodes, xdaFile):
                         continue
                     temp = [None] * len(nasm_operands)
                     all_operand_combinations = PopulateOperandMapping(nasm_operands, 0, temp, [], 1)
-                    for nasm_operand_combination in all_operand_combinations:
-                        nasm_operand_combination.remove("") if "" in nasm_operand_combination else None
-                        nasm_instruction = f"{prefix}{opcode} " + ", ".join(nasm_operand_combination)
-                        all_instruction_combinations.append(nasm_instruction)
+                    for opcodeEx in opcodesEx:
+                        for nasm_operand_combination in all_operand_combinations:
+                            nasm_operand_combination.remove("") if "" in nasm_operand_combination else None
+                            nasm_instruction = f"{prefix}{opcodeEx} " + ", ".join(nasm_operand_combination)
+                            all_instruction_combinations.append(nasm_instruction)
         #print (opcode, all_instruction_combinations)
         nasm_instructions.append({opcode: all_instruction_combinations})
     return nasm_instructions
@@ -770,7 +808,7 @@ def GenerateGasInstructions(opcodes, xdaFile):
                 if not line.strip():
                     continue
                 if line.split()[0] == opcode:
-                    prefix = GetPrefix(line)
+                    opcodesEx, prefix = GetOpcodeAndPrefix(line, opcode)
                     operandStr = line.split()[1]
                     operands = SplitOperands(operandStr)
                     gas_operands = []
@@ -785,10 +823,11 @@ def GenerateGasInstructions(opcodes, xdaFile):
                         continue
                     temp = [None] * len(gas_operands)
                     all_operand_combinations = PopulateOperandMapping(gas_operands, len(gas_operands) - 1, temp, [], -1)
-                    for gas_operand_combination in all_operand_combinations:
-                        gas_operand_combination.remove("") if "" in gas_operand_combination else None
-                        gas_instruction = f"{prefix}{opcode} " + ", ".join(gas_operand_combination)
-                        all_instruction_combinations.append(gas_instruction)
+                    for opcodeEx in opcodesEx:
+                        for gas_operand_combination in all_operand_combinations:
+                            gas_operand_combination.remove("") if "" in gas_operand_combination else None
+                            gas_instruction = f"{prefix}{opcodeEx} " + ", ".join(gas_operand_combination)
+                            all_instruction_combinations.append(gas_instruction)
         gas_instructions.append({opcode: all_instruction_combinations})
     return gas_instructions
 
