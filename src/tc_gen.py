@@ -458,7 +458,7 @@ operand_to_nasm_gas_mapping = {
 }
 
 blacklist_non_64bit_opcodes = [
-        "AAA",
+    "AAA",
     "AAD",
     "AAM",
     "AAS",
@@ -477,10 +477,7 @@ blacklist_non_64bit_opcodes = [
     "DMINT",
     "IBTS",
     "INTO",
-    "INVEPT",
     "INVLPGA",
-    "INVPCID",
-    "INVVPID",
     "JCXZ",
     "LDS",
     "LES",
@@ -525,9 +522,8 @@ blacklist_non_64bit_opcodes = [
 ]
 
 blacklist_non_intel_opcodes = [
-        "BB0_RESET",
+    "BB0_RESET",
     "BB1_RESET",
-    "BEXTR",
     "BLCFILL",
     "BLCI",
     "BLCIC",
@@ -543,11 +539,9 @@ blacklist_non_intel_opcodes = [
     "EXTRQ",
     "INSERTQ",
     "INVLPGA",
-    "LFENCE",
     "LLWPCB",
     "LWPINS",
     "LWPVAL",
-    "MFENCE",
     "MONITORX",
     "MONTMUL",
     "MOVNTSD",
@@ -574,7 +568,6 @@ blacklist_non_intel_opcodes = [
     "RSDC",
     "RSLDT",
     "RSTS",
-    "SFENCE",
     "SLWPCB",
     "SMINT",
     "SMINTOLD",
@@ -582,8 +575,6 @@ blacklist_non_intel_opcodes = [
     "SVDC",
     "SVLDT",
     "SVTS",
-    "SYSCALL",
-    "SYSRET",
     "T1MSKC",
     "TZMSK",
     "VFMADDPD",
@@ -661,7 +652,6 @@ blacklist_non_intel_opcodes = [
     "VPSHAQ",
     "VPSHAW",
     "VPSHLB",
-    "VPSHLD",
     "VPSHLQ",
     "VPSHLW",
     "WRSHR",
