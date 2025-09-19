@@ -17,7 +17,7 @@ travis_gen:
 	bash src/travis_gen.sh | tee gen_travis.log
 
 clean:
-	rm gen.log gen_travis.log build.log check.log
+	rm -rf gen.log gen_travis.log build.log check.log
 	rm -rf target_src/nasm target_src/gas
 	rm -rf output/nasm.2.16.03 output/nasm.3.00.rc3 output/gas
 
