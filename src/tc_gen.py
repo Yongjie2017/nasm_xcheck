@@ -129,32 +129,32 @@ operand_to_nasm_gas_mapping = {
                           ["oword (%rax,%r14,8)"]],
     "mem128|mask"      : [["oword [rax+r14*8]{k1}"],
                           ["oword (%rax,%r14,8){%k1}"]],
-    "mem16"            : [["word [eax]"],
-                          ["word (%eax)"]],
-    "mem16|far"        : [["word [eax]", "far word [eax]"],
-                          ["word (%eax)", "far word (%eax)"]],
-    "mem16|mask"       : [["word [eax]{k1}"],
-                          ["word (%eax){%k1}"]],
-    "mem256"           : [["yword [rax+r14*8]"],
-                          ["yword (%rax,%r14,8)"]],
+    "mem16"            : [["word [ax]", "word [ax+cx*8]", "word [ax+cx*8+0x10]"],
+                          ["word (%ax)", "word (%ax,%cx,8)", "word $0x10(%ax,%cx,8)"]],
+    "mem16|far"        : [["far word [eax]", "far word [eax]"],
+                          ["far word (%eax)", "far word (%eax)"]],
+    "mem16|mask"       : [["word [ax]{k1}", "word [ax+cx*8]{k1}", "word [ax+cx*8+0x10]{k1}"],
+                          ["word (%ax){%k1}", "word (%ax,%cx,8){%k1}", "word $0x10(%ax,%cx,8){%k1}"]],
+    "mem256"           : [["yword [rax]", "yword [rax+r14*8]"],
+                          ["yword (%rax)", "yword (%rax,%r14,8)"]],
     "mem256|mask"      : [["yword [rax+r14*8]{k1}"],
                           ["yword (%rax,%r14,8){%k1}"]],
-    "mem32"            : [["dword [eax+ecx*8+0x10]"],
-                          ["dword $0x10(%eax,%ecx,8)"]],
-    "mem32|far"        : [["far dword [eax]"],
-                          ["far dword (%eax)"]],
-    "mem32|mask"       : [["far dword [eax]{k1}"],
-                          ["far dword (%eax){%k1}"]],
-    "mem512"           : [["zword [rax+r14*8+0x10]"],
-                          ["zword $0x10(%rax,%r14,8)"]],
-    "mem512|mask"      : [["zword [rax+r14*8+0x10]{k1}"],
-                          ["zword $0x10(%rax,%r14,8){%k1}"]],
-    "mem64"            : [["qword [rax+rcx*8+0x10]"],
-                          ["qword $0x10(%rax,%rcx,8)"]],
-    "mem64|far"        : [["far qword [rax]"],
-                          ["far qword (%rax)"]],
-    "mem64|mask"       : [["qword [rax+rcx*8+0x10]{k1}"],
-                          ["qword $0x10(%rax,%rcx,8){%k1}"]],
+    "mem32"            : [["dword [eax]", "dword [eax+ecx*8]", "dword [eax+ecx*8+0x10]"],
+                          ["dword (%eax)", "dword (%eax,%ecx,8)", "dword $0x10(%eax,%ecx,8)"]],
+    "mem32|far"        : [["far dword [eax]", "far dword [eax+ecx*8]", "far dword [eax+ecx*8+0x10]"],
+                          ["far dword (%eax)", "far dword (%eax,%ecx,8)", "far dword $0x10(%eax,%ecx,8)"]],
+    "mem32|mask"       : [["far dword [eax]{k1}", "far dword [eax+ecx*8]{k1}", "far dword [eax+ecx*8+0x10]{k1}"],
+                          ["far dword (%eax){%k1}", "far dword (%eax,%ecx,8){%k1}", "far dword $0x10(%eax,%ecx,8){%k1}"]],
+    "mem512"           : [["zword [rax]", "zword [rax+r14*8]", "zword [rax+r14*8+0x10]"],
+                          ["zword (%rax)", "zword (%rax,%r14,8)", "zword $0x10(%rax,%r14,8)"]],
+    "mem512|mask"      : [["zword [rax]{k1}", "zword [rax+r14*8]{k1}", "zword [rax+r14*8+0x10]{k1}"],
+                          ["zword (%rax){%k1}", "zword (%rax,%r14,8){%k1}", "zword $0x10(%rax,%r14,8){%k1}"]],
+    "mem64"            : [["qword [rax]", "qword [rax+rcx*8]", "qword [rax+rcx*8+0x10]"],
+                          ["qword (%rax)", "qword (%rax,%rcx,8)", "qword $0x10(%rax,%rcx,8)"]],
+    "mem64|far"        : [["far qword [rax]", "far qword [rax+rcx*8]", "far qword [rax+rcx*8+0x10]"],
+                          ["far qword (%rax)", "far qword (%rax,%rcx,8)", "far qword $0x10(%rax,%rcx,8)"]],
+    "mem64|mask"       : [["qword [rax]{k1}", "qword [rax+rcx*8]{k1}", "qword [rax+rcx*8+0x10]{k1}"],
+                          ["qword (%rax){%k1}", "qword (%rax,%rcx,8){%k1}", "qword $0x10(%rax,%rcx,8){%k1}"]],
     "mem8"             : [["byte [eax+ecx*8+0x10]"],
                           ["byte $0x10(%eax,%ecx,8)"]],
     "mem80"            : [[ "[0x1000]"],
@@ -244,7 +244,7 @@ operand_to_nasm_gas_mapping = {
     "rm32*"            : [["eax", "dword [eax]", ""],
                           ["%eax", "dword (%eax)", ""]],
     "rm32|er"          : [["eax", "dword [eax]", "eax,{rd-sae}"],
-                          ["%eax", "dword (%eax)""%eax,{rd-sae}"]],
+                          ["%eax", "dword (%eax)", "%eax,{rd-sae}"]],
     "rm32|near"        : [["eax", "dword near1"],
                           ["%eax", "dword near1"]],
     "rm64"             : [["rax", "qword [rax]"],
@@ -267,8 +267,8 @@ operand_to_nasm_gas_mapping = {
                           ["$0x7F"]],
     "sdword64"         : [["0x55AA55AA"],
                           ["$0x55AA55AA"]],
-    "spec4"            : [["[rax+r14*8+0x10]", "[rax]"],
-                          ["$0x10(%rax,%r14,8)", "(%rax)"]],
+    "spec4"            : [["{dfv=}", "{dfv=cf}", "{dfv=zf}", "{dfv=sf}", "{dfv=of}", "{dfv=cf,zf}", "{dfv=sf,of}", "{dfv=cf,zf,of}", "{dfv=cf,zf,sf,of}"],
+                          ["{dfv=}", "{dfv=cf}", "{dfv=zf}", "{dfv=sf}", "{dfv=of}", "{dfv=cf,zf}", "{dfv=sf,of}", "{dfv=cf,zf,of}", "{dfv=cf,zf,sf,of}"]],
     "tmmreg"           : [["tmm0"],
                           ["%tmm0"]],
     "udword64"         : [["qword [rax]"],
@@ -730,7 +730,9 @@ def GetOpcodeAndPrefix(line: str, opcode: str):
     opcodesEx = [opcode]
     prefix = ""
 
-    if line.find("evex.") != -1:
+    if line.find("evex.scc") != -1:
+        prefix = ""
+    elif line.find("evex.") != -1:
         prefix = "{evex} "
     elif line.find("vex.") != -1 or line.find("vex+.") != -1:
         prefix = "{vex} "
@@ -782,7 +784,13 @@ def GenerateNasmInstructions(opcodes, xdaFile):
                     for opcodeEx in opcodesEx:
                         for nasm_operand_combination in all_operand_combinations:
                             nasm_operand_combination.remove("") if "" in nasm_operand_combination else None
-                            nasm_instruction = f"{prefix}{opcodeEx} " + ", ".join(nasm_operand_combination)
+                            suffix = ""
+                            # remove the first element if the first element includes string '{dfv=...}' and put it as a suffix to opcode
+                            operands_list = nasm_operand_combination.copy()
+                            if operands_list and '{dfv=' in operands_list[0]:
+                                suffix = operands_list[0]
+                                operands_list.pop(0)
+                            nasm_instruction = f"{prefix}{opcodeEx} {suffix} " + ", ".join(operands_list)
                             all_instruction_combinations.append(nasm_instruction)
         #print (opcode, all_instruction_combinations)
         nasm_instructions.append({opcode: all_instruction_combinations})
@@ -816,7 +824,13 @@ def GenerateGasInstructions(opcodes, xdaFile):
                     for opcodeEx in opcodesEx:
                         for gas_operand_combination in all_operand_combinations:
                             gas_operand_combination.remove("") if "" in gas_operand_combination else None
-                            gas_instruction = f"{prefix}{opcodeEx} " + ", ".join(gas_operand_combination)
+                            suffix = ""
+                            # remove the last element if the last element includes string '{dfv=...}' and put it as a suffix to opcode
+                            operands_list = gas_operand_combination.copy()
+                            if operands_list and '{dfv=' in operands_list[-1]:
+                                suffix = operands_list[-1]
+                                operands_list.pop(-1)
+                            gas_instruction = f"{prefix}{opcodeEx} {suffix} " + ", ".join(operands_list)
                             all_instruction_combinations.append(gas_instruction)
         gas_instructions.append({opcode: all_instruction_combinations})
     return gas_instructions
