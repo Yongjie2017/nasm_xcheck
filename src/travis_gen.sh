@@ -29,11 +29,11 @@ do
 	do
 		t_gas=$(echo $t | sed 's/nasm\.asm/gas.s/')
 		if [ -f output/gas/${t_gas}.o ]; then
-			a=$(grep " $x" target_src/nasm/$t)
+			a=$(grep " $x" target_src/nasm/$t | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 			echo -e "\tbits 64\n\t${a}" > /tmp/tmp.asm
 			../nasm -f BIN -o /tmp/tmp.bin /tmp/tmp.asm
-			b=$(xxd -i /tmp/tmp.bin | grep "^ ")
-			printf "testcase        {%-76s}, {%-76s }\n" "$b" "$a" >> ${TC_FILE}
+			b=$(xxd -i /tmp/tmp.bin | grep "^ " | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+			printf "testcase    { %-76s }, { %-76s }\n" "$b" "$a" >> ${TC_FILE}
 		fi
 	done
 done
