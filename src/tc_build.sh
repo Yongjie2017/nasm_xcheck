@@ -19,7 +19,7 @@ output_gas=${cur_dir}/output/gas
 
 # prepare the instruction list
 pushd $src_nasm
-nasm_insns=$(ls | sed 's/^test_//' | sed 's/_nasm\.asm//' | sort -u)
+nasm_insns=$(ls | sed 's/^test_//' | sed 's/_nasm\.asm//' | sort -u -V)
 popd
 
 # build with 2.16.03
@@ -46,7 +46,7 @@ done
 
 # prepare the instruction list
 pushd $src_gas
-gas_insns=$(ls | sed 's/^test_//' | sed 's/_gas\.s//' | sort -u)
+gas_insns=$(ls | sed 's/^test_//' | sed 's/_gas\.s//' | sort -u -V)
 popd
 
 # build with gas

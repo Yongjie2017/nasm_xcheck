@@ -12,7 +12,7 @@ output_gas=${cur_dir}/output/gas
 
 # prepare the instruction list
 pushd $src_nasm
-nasm_insns=$(ls | sed 's/^test_//' | sed 's/_nasm\.asm//' | sort -u)
+nasm_insns=$(ls | sed 's/^test_//' | sed 's/_nasm\.asm//' | sort -u -V)
 popd
 
 # compare output between nasm 2.16.03 and 3.00.rc3

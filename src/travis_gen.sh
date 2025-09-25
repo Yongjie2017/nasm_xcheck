@@ -23,7 +23,7 @@ do
 	echo Test case generating for instruction $x
 
 	pushd output/nasm.3.00.rc3
-	tests=$(ls test_${x}_*_nasm.asm.o | sed 's/\.o//')
+	tests=$(ls test_${x}_*_nasm.asm.o | sed 's/\.o//' | sort -V)
 	popd
 	for t in $tests
 	do
