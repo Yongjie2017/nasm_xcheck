@@ -845,6 +845,8 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--xdafile", "-i", type=str, default="../x86/insns.xda", help="The instruction database from nasm")
+    # add an argument "--target"
+    parser.add_argument("--target", "-t", type=str, choices=["nasm", "gas", "both"], default="both", help="The target assembler to generate test files for")
     args = parser.parse_args()
 
     opcodes = GetOpcodeList(args.xdafile)
@@ -860,28 +862,30 @@ if __name__ == "__main__":
     #for op in operands:
     #    print(f'    "{op}",')
 
-    nasm_instructions = GenerateNasmInstructions(opcodes, args.xdafile)
-    #json_str = json.dumps(nasm_instructions, indent=2)
-    #print(f"Generated NASM instructions:\n{json_str}\n")
-    for instruction in nasm_instructions:
-        for opcode, insns in instruction.items():
-            print (f"Generating NASM test file for opcode '{opcode}' with {len(insns)} instructions\n")
-            for i in range(len(insns)):
-                target_path = os.path.join(os.getcwd(), "target_src", "nasm", f"test_{opcode}_{i}_nasm.asm")
-                with open(target_path, 'w') as f:
-                    f.write(NASM_HEADER % (opcode, opcode))
-                    f.write(f"        {insns[i]}\n")
-                    f.write(NASM_FOOTER)
+    if args.target in ["nasm", "both"]:
+        nasm_instructions = GenerateNasmInstructions(opcodes, args.xdafile)
+        #json_str = json.dumps(nasm_instructions, indent=2)
+        #print(f"Generated NASM instructions:\n{json_str}\n")
+        for instruction in nasm_instructions:
+            for opcode, insns in instruction.items():
+                print (f"Generating NASM test file for opcode '{opcode}' with {len(insns)} instructions\n")
+                for i in range(len(insns)):
+                    target_path = os.path.join(os.getcwd(), "target_src", "nasm", f"test_{opcode}_{i}_nasm.asm")
+                    with open(target_path, 'w') as f:
+                        f.write(NASM_HEADER % (opcode, opcode))
+                        f.write(f"        {insns[i]}\n")
+                        f.write(NASM_FOOTER)
 
-    gas_instructions = GenerateGasInstructions(opcodes, args.xdafile)
-    #json_str = json.dumps(gas_instructions, indent=2)
-    #print(f"Generated GAS instructions:\n{json_str}\n")
-    for instruction in gas_instructions:
-        for opcode, insns in instruction.items():
-            print (f"Generating GAS test file for opcode '{opcode}' with {len(insns)} instructions\n")
-            for i in range(len(insns)):
-                target_path = os.path.join(os.getcwd(), "target_src", "gas", f"test_{opcode}_{i}_gas.s")
-                with open(target_path, 'w') as f:
-                    f.write(GAS_HEADER % (opcode, opcode))
-                    f.write(f"        {insns[i]}\n")
-                    f.write(GAS_FOOTER)
+    if args.target in ["gas", "both"]:
+        gas_instructions = GenerateGasInstructions(opcodes, args.xdafile)
+        #json_str = json.dumps(gas_instructions, indent=2)
+        #print(f"Generated GAS instructions:\n{json_str}\n")
+        for instruction in gas_instructions:
+            for opcode, insns in instruction.items():
+                print (f"Generating GAS test file for opcode '{opcode}' with {len(insns)} instructions\n")
+                for i in range(len(insns)):
+                    target_path = os.path.join(os.getcwd(), "target_src", "gas", f"test_{opcode}_{i}_gas.s")
+                    with open(target_path, 'w') as f:
+                        f.write(GAS_HEADER % (opcode, opcode))
+                        f.write(f"        {insns[i]}\n")
+                        f.write(GAS_FOOTER)

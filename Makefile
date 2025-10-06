@@ -1,23 +1,43 @@
 
-all: tc_gen tc_build tc_check
+all: nasm gas
 
-tc_gen: ../x86/insns.xda src/tc_gen.py
-	rm -rf target_src/*
-	mkdir -p target_src/nasm target_src/gas
-	python3 src/tc_gen.py | tee gen.log
+.Phony: nasm gas
 
-tc_build: target_src/nasm target_src/gas
-	mkdir -p output/nasm.2.16.03 output/nasm.3.00.rc3 output/gas
-	bash src/tc_build.sh 2>&1 | tee build.log
+# target nasm depends on tc_gen_nasm, tc_build_nasm, and tc_check_nasm
+nasm: tc_gen_nasm tc_build_nasm tc_check_nasm
 
-tc_check: output/nasm.2.16.03 output/nasm.3.00.rc3 output/gas
-	bash src/tc_check.sh | tee check.log
+# target gas depends on tc_gen_gas, tc_build_gas, and tc_check_gas
+gas: tc_gen_gas tc_build_gas tc_check_gas
+
+tc_gen_nasm: ../x86/insns.xda src/tc_gen.py
+	rm -rf target_src/nasm
+	mkdir -p target_src/nasm
+	python3 src/tc_gen.py --target nasm | tee gen_nasm.log
+
+tc_gen_gas: ../x86/insns.xda src/tc_gen.py
+	rm -rf target_src/gas
+	mkdir -p target_src/gas
+	python3 src/tc_gen.py --target gas | tee gen_gas.log
+
+tc_build_nasm: target_src/nasm
+	mkdir -p output/nasm.ref output/nasm.cur
+	bash src/tc_build.sh nasm 2>&1 | tee build_nasm.log
+
+tc_build_gas: target_src/gas
+	mkdir -p output/gas
+	bash src/tc_build.sh gas 2>&1 | tee build_gas.log
+
+tc_check_nasm: output/nasm.ref output/nasm.cur
+	bash src/tc_check.sh nasm | tee check_nasm.log
+
+tc_check_gas: output/nasm.cur output/gas
+	bash src/tc_check.sh gas | tee check_gas.log
 
 travis_gen:
 	bash src/travis_gen.sh | tee gen_travis.log
 
 clean:
-	rm -rf gen.log gen_travis.log build.log check.log
+	rm -rf gen*.log build*.log check*.log gen_travis.log
 	rm -rf target_src/nasm target_src/gas
-	rm -rf output/nasm.2.16.03 output/nasm.3.00.rc3 output/gas
+	rm -rf output/nasm.ref output/nasm.cur output/gas
 
