@@ -21,11 +21,17 @@ tc_gen_gas: ../x86/insns.xda src/tc_gen.py
 
 tc_build_nasm: target_src/nasm
 	mkdir -p output/nasm.ref output/nasm.cur
-	bash src/tc_build.sh nasm 2>&1 | tee build_nasm.log
+	cp Makefile.nasm output/nasm.ref/Makefile
+	cp Makefile.nasm output/nasm.cur/Makefile
+	make -j -C output/nasm.ref NASM=nasm 2>&1 | tee build_nasm_ref.log
+	make -j -C output/nasm.cur NASM="../../../nasm" 2>&1 | tee build_nasm_cur1.log
 
 tc_build_gas: target_src/gas
-	mkdir -p output/gas
-	bash src/tc_build.sh gas 2>&1 | tee build_gas.log
+	mkdir -p output/gas output/nasm.cur
+	cp Makefile.nasm output/nasm.ref/Makefile
+	cp Makefile.gas output/gas/Makefile
+	make -j -C output/nasm.cur NASM="../../../nasm" 2>&1 | tee build_nasm_cur2.log
+	make -j -C output/gas GAS="as" 2>&1 | tee build_gas.log
 
 tc_check_nasm: output/nasm.ref output/nasm.cur
 	bash src/tc_check.sh nasm | tee check_nasm.log

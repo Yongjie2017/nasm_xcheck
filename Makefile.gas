@@ -1,0 +1,15 @@
+
+# build by reference gas compiler
+
+SRCS_DIR    := ../../target_src/gas
+
+SRCS_GAS   := $(wildcard $(SRCS_DIR)/*.s)
+OBJS_GAS   := $(subst ../../target_src/gas/,,$(subst .s,.o,$(SRCS_GAS)))
+
+GAS ?= "as"
+
+%.o: $(SRCS_DIR)/%.s
+	-$(GAS) $< -o $@
+
+all: $(OBJS_GAS)
+	
