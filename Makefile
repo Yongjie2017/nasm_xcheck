@@ -19,6 +19,10 @@ tc_gen_gas: ../x86/insns.xda src/tc_gen.py
 	mkdir -p target_src/gas
 	python3 src/tc_gen.py --target gas | tee gen_gas.log
 
+tc_gen: tc_gen_nasm tc_gen_gas
+	# do nothing
+	@echo "Code generation done."
+
 tc_build_nasm: target_src/nasm
 	mkdir -p output/nasm.ref output/nasm.cur
 	cp Makefile.nasm output/nasm.ref/Makefile
@@ -33,11 +37,19 @@ tc_build_gas: target_src/gas
 	make -j -C output/nasm.cur NASM="../../../nasm" 2>&1 | tee build_nasm_cur2.log
 	make -j -C output/gas GAS="as" 2>&1 | tee build_gas.log
 
+tc_build: tc_build_nasm tc_build_gas
+	# do nothing
+	@echo "Build done."
+
 tc_check_nasm: output/nasm.ref output/nasm.cur
 	bash src/tc_check.sh nasm | tee check_nasm.log
 
 tc_check_gas: output/nasm.cur output/gas
 	bash src/tc_check.sh gas | tee check_gas.log
+
+tc_check: tc_check_nasm tc_check_gas
+	# do nothing
+	@echo "Check done."
 
 travis_gen:
 	bash src/travis_gen.sh | tee gen_travis.log
