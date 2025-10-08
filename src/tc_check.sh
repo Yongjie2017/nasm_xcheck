@@ -31,10 +31,10 @@ if [ "$check_nasm" -eq "1" ]; then
 	echo "Comparing output between nasm ref and cur"
 	for insn in $nasm_insns
 	do
-		if [ -f ${output_cur}/test_${insn}_nasm.asm.o -a -f ${output_ref}/test_${insn}_nasm.asm.o ]; then
+		if [ -f ${output_cur}/test_${insn}_nasm.o -a -f ${output_ref}/test_${insn}_nasm.o ]; then
 			echo -n "$insn ... "
-			objdump -d ${output_ref}/test_${insn}_nasm.asm.o | tail -n +4 > /tmp/ref.dump
-			objdump -d ${output_cur}/test_${insn}_nasm.asm.o | tail -n +4 > /tmp/cur.dump
+			objdump -d ${output_ref}/test_${insn}_nasm.o | tail -n +4 > /tmp/ref.dump
+			objdump -d ${output_cur}/test_${insn}_nasm.o | tail -n +4 > /tmp/cur.dump
 
 			# applying a work around on prefix group3/4 order, if doesn't match
 			if ! diff /tmp/ref.dump /tmp/cur.dump >/dev/null; then
@@ -57,10 +57,10 @@ if [ "$check_gas" -eq "1" ]; then
 	echo "Comparing output between nasm gas and cur"
 	for insn in $nasm_insns
 	do
-		if [ -f ${output_cur}/test_${insn}_nasm.asm.o -a -f ${output_gas}/test_${insn}_gas.s.o ]; then
+		if [ -f ${output_cur}/test_${insn}_nasm.o -a -f ${output_gas}/test_${insn}_gas.o ]; then
 			echo -n "$insn ... "
-			objdump -d --no-show-raw-insn --no-addresses ${output_gas}/test_${insn}_gas.s.o | tail -n +4 > /tmp/gas.dump
-			objdump -d --no-show-raw-insn --no-addresses ${output_cur}/test_${insn}_nasm.asm.o | tail -n +4 > /tmp/cur.dump
+			objdump -d --no-show-raw-insn --no-addresses ${output_gas}/test_${insn}_gas.o | tail -n +4 > /tmp/gas.dump
+			objdump -d --no-show-raw-insn --no-addresses ${output_cur}/test_${insn}_nasm.o | tail -n +4 > /tmp/cur.dump
 
 			# applying a work around on offset
 			sed -i -e 's/0x0(%eax/(%eax/' -e 's/0x0(%ax/(%ax/' -e 's/0x0(%rax/(%rax/' /tmp/gas.dump
